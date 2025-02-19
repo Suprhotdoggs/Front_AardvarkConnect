@@ -1,26 +1,23 @@
-import { useState } from "react";
+import React from "react";
+import { FaHome, FaUserFriends, FaUsers } from "react-icons/fa";
 import "./Navbar.css";
 
 export default function Navbar() {
-  const [active, setActive] = useState("Profile");
-
   return (
-    <div className="navbar-container">
-      <h1 className="navbar-title">Aardvark Connect</h1>
-      <p className="navbar-description">
-        The Social Network for all Aardvark Students to interact:
-      </p>
-      <nav className="navbar-menu">
-        {["Home", "Profile", "Club Hub", "Settings"].map((item) => (
-          <button
-            key={item}
-            onClick={() => setActive(item)}
-            className={`navbar-item ${active === item ? "navbar-active" : ""}`}
-          >
-            {item}
-          </button>
-        ))}
-      </nav>
-    </div>
+    <nav className="navbar">
+      <div className="logo">Aardvark Connect</div>
+      <div className="nav-links">
+        <a href="#" className="nav-item">
+          <FaHome className="icon" />
+        </a>
+        <a href="#" className="nav-item">
+          <FaUserFriends className="icon" />
+        </a>
+        <a href="#" className="nav-item">
+          <FaUsers className="icon" />
+        </a>
+      </div>
+      <input type="text" className="search-bar" placeholder="Search..." />
+    </nav>
   );
 }
