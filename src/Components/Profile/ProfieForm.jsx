@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import { Camera } from "lucide-react";
-import "./ProfileForm.css"; // Import the CSS file
+import "./ProfileForm.css";
+import Navbar from "../Navbar";
 
 export default function ProfileForm() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
     firstName: "",
     lastName: "",
@@ -12,6 +15,15 @@ export default function ProfileForm() {
     profilePicture: "",
   });
   const [isViewing, setIsViewing] = useState(false);
+
+  // Load saved profile from localStorage when the component mounts
+  useEffect(() => {
+    const savedProfile = JSON.parse(localStorage.getItem("userProfile"));
+    if (savedProfile) {
+      setProfile(savedProfile);
+      setIsViewing(true);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,39 +42,18 @@ export default function ProfileForm() {
   };
 
   const handleSubmit = () => {
+    localStorage.setItem("userProfile", JSON.stringify(profile)); // Save profile to localStorage
     setIsViewing(true);
+    navigate("/"); // Redirect to home page
   };
 
   return (
-    <div className="profile-card">
-      <div className="profile-content">
-        {isViewing ? (
-          <div className="profile-view">
-            <div className="profile-image">
-              {profile.profilePicture ? (
-                <img
-                  src={profile.profilePicture}
-                  alt="Profile"
-                  className="image"
-                />
-              ) : (
-                <div className="image-placeholder">
-                  <Camera size={32} className="icon" />
-                </div>
-              )}
-            </div>
-            <h2 className="profile-name">
-              {profile.firstName} {profile.lastName}
-            </h2>
-            <p className="profile-text">{profile.street}</p>
-            <p className="profile-text">
-              Relationship Status: {profile.relationshipStatus}
-            </p>
-            <p className="profile-text">Gender: {profile.gender}</p>
-          </div>
-        ) : (
-          <>
-            <div className="image-upload-container">
+    <>
+      <Navbar />
+      <div className="profile-card">
+        <div className="profile-content">
+          {isViewing ? (
+            <div className="profile-view">
               <div className="profile-image">
                 {profile.profilePicture ? (
                   <img
@@ -76,81 +67,107 @@ export default function ProfileForm() {
                   </div>
                 )}
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-              />
+              <h2 className="profile-name">
+                {profile.firstName} {profile.lastName}
+              </h2>
+              <p className="profile-text">{profile.street}</p>
+              <p className="profile-text">
+                Relationship Status: {profile.relationshipStatus}
+              </p>
+              <p className="profile-text">Gender: {profile.gender}</p>
             </div>
+          ) : (
+            <>
+              <div className="image-upload-container">
+                <div className="profile-image">
+                  {profile.profilePicture ? (
+                    <img
+                      src={profile.profilePicture}
+                      alt="Profile"
+                      className="image"
+                    />
+                  ) : (
+                    <div className="image-placeholder">
+                      <Camera size={32} className="icon" />
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                />
+              </div>
 
-            <div className="input-container">
-              <label>First Name</label>
-              <input
-                type="text"
-                name="firstName"
-                value={profile.firstName}
-                onChange={handleChange}
-                placeholder="Enter first name"
-              />
-            </div>
+              <div className="input-container">
+                <label>First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={profile.firstName}
+                  onChange={handleChange}
+                  placeholder="Enter first name"
+                />
+              </div>
 
-            <div className="input-container">
-              <label>Last Name</label>
-              <input
-                type="text"
-                name="lastName"
-                value={profile.lastName}
-                onChange={handleChange}
-                placeholder="Enter last name"
-              />
-            </div>
+              <div className="input-container">
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={profile.lastName}
+                  onChange={handleChange}
+                  placeholder="Enter last name"
+                />
+              </div>
 
-            <div className="input-container">
-              <label>Street</label>
-              <input
-                type="text"
-                name="street"
-                value={profile.street}
-                onChange={handleChange}
-                placeholder="Enter street"
-              />
-            </div>
+              <div className="input-container">
+                <label>Street</label>
+                <input
+                  type="text"
+                  name="street"
+                  value={profile.street}
+                  onChange={handleChange}
+                  placeholder="Enter street"
+                />
+              </div>
 
-            <div className="input-container">
-              <label>Relationship Status</label>
-              <select
-                name="relationshipStatus"
-                value={profile.relationshipStatus}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option value="single">Single</option>
-                <option value="in_a_relationship">In a Relationship</option>
-                <option value="married">Married</option>
-                <option value="complicated">It's Complicated</option>
-              </select>
-            </div>
+              <div className="input-container">
+                <label>Relationship Status</label>
+                <select
+                  name="relationshipStatus"
+                  value={profile.relationshipStatus}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="single">Single</option>
+                  <option value="in_a_relationship">In a Relationship</option>
+                  <option value="married">Married</option>
+                  <option value="complicated">It's Complicated</option>
+                </select>
+              </div>
 
-            <div className="input-container">
-              <label>Gender</label>
-              <select
-                name="gender"
-                value={profile.gender}
-                onChange={handleChange}
-              >
-                <option value="">Select</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+              <div className="input-container">
+                <label>Gender</label>
+                <select
+                  name="gender"
+                  value={profile.gender}
+                  onChange={handleChange}
+                >
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
 
-            <button className="submit-button" onClick={handleSubmit}>
-              Save Profile
-            </button>
-          </>
-        )}
+              <button className="submit-button" onClick={handleSubmit}>
+                Save Profile
+              </button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
